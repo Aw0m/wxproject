@@ -33,7 +33,7 @@ async def createNote(info: createNoteInfo,userID: Union[str, None] = Header(defa
     if userID and noteTitle:
         noteTitle = str(noteTitle)
         noteContent = str(noteContent)
-        sql = "INSERT INTO note (userID,title,content) VALUES ('%s','%s','%s')" % (
+        sql = "INSERT INTO note (userID,title,content) VALUES ('%d','%s','%s')" % (
             userID, noteTitle, noteContent)
         try:
             # 执行语句
@@ -54,7 +54,7 @@ async def createNote(info: createNoteInfo,userID: Union[str, None] = Header(defa
 async def deleteNote(info: deleteNoteInfo, userID: Union[str, None] = Header(default=None)):
     noteTitle = info.noteTitle
     if userID and noteTitle:
-        sql = "DELETE FROM note WHERE userID='%s' AND title='%s'" % (
+        sql = "DELETE FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
         try:
             # 执行语句
@@ -100,7 +100,7 @@ async def updateNoteDate(info:updateNoteDateInfo,userID: Union[str, None] = Head
 @app.get("/api/note/getNoteList")
 async def getNoteList(userID: Union[str, None] = Header(default=None)):
     if userID:
-        sql = "SELECT title FROM note WHERE userID='%s'" % (userID)
+        sql = "SELECT title FROM note WHERE userID='%d'" % (userID)
         try:
             # 执行语句
             cursor.execute(sql)
@@ -122,9 +122,10 @@ async def getNoteList(userID: Union[str, None] = Header(default=None)):
 @app.get("/api/note/getNote")
 async def getData(noteTitle: getDataInfo,userID: Union[str, None] = Header(default=None)):
     noteTitle=getDataInfo.noteTitle
+    print(noteTitle)
     noteTitle=str(noteTitle)
     if userID and noteTitle:
-        sql = "SELECT content FROM note WHERE userID='%s' AND title='%s'" % (
+        sql = "SELECT content FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
         try:
             # 执行语句
