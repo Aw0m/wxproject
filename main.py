@@ -56,11 +56,20 @@ async def deleteNote(info: deleteNoteInfo, userID: Union[str, None] = Header(def
     if userID and noteTitle:
         sql = "DELETE FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
+        # obtainOder="SELECT id FROM note WHERE userID='%d'AND title='%s'" % (
+        #     userID, noteTitle)
+
         try:
-            # 执行语句
             cursor.execute(sql)
-            # 提交到数据库
+            #keep id's order
+            # cursor.execute(obtainOder)
+            # db.commit()
+            # order = cursor.fetchall()
+            # order=int(order)
+            # keepOrder = "alter table note AUTO_INCREMENT='%d'"%(order+1)
+            # cursor.execute(keepOrder)
             db.commit()
+
 
         except:
             # 发生错误就回滚
