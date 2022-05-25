@@ -4,7 +4,7 @@
 
 from typing import *
 from fastapi import *
-from model import Info
+from model import *
 import uvicorn
 import pymysql
 
@@ -26,10 +26,8 @@ app = FastAPI()
 
 # 创建笔记
 
-# 随便试一试的修改
-
 @app.post("/api/note/createNote")
-async def CreateNote(info: Info,userID: Union[str, None] = Header(default=None)):
+async def createNote(info: createNoteInfo,userID: Union[str, None] = Header(default=None)):
     noteTitle = info.noteTitle
     noteContent = info.noteContent
     print(userID, noteTitle, noteContent)
@@ -54,7 +52,7 @@ async def CreateNote(info: Info,userID: Union[str, None] = Header(default=None))
 
 # 删除笔记
 @app.post("/api/note/deleteNote")
-async def deleteNote(info: Info, userID: Union[str, None] = Header(default=None)):
+async def deleteNote(info: deleteNoteInfo, userID: Union[str, None] = Header(default=None)):
     noteTitle = info.noteTitle
     if userID and noteTitle:
         sql = "DELETE FROM note WHERE userID='%s' AND title='%s'" % (
@@ -76,9 +74,11 @@ async def deleteNote(info: Info, userID: Union[str, None] = Header(default=None)
 
 # 更新笔记
 @app.post("/api/note/updateNoteDate")
-async def update(userID: Union[str, None] = Header(default=None), oldTitle: str = "", newTitle: str = "",
-                 noteContent: str = ""):
-    if userID and oldTitle and newTitle and noteContent:
+async def updateNoteDate(info:updateNoteDateInfo,userID: Union[str, None] = Header(default=None)):
+    oldTitle=info.oldTitle
+    newTitle=info.newTitle
+    noteContent=info.noteContent
+    if userID and oldTitle and newTitle:
         sql = "UPDATE note SET title='%s',content='%s' WHERE id='%s' AND title='%s'" % (
             newTitle, noteContent, userID, oldTitle)
         try:
@@ -121,7 +121,7 @@ async def getNoteList(userID: Union[str, None] = Header(default=None)):
 
 # 获取笔记数据
 @app.get("/api/note/getNote")
-async def getData(userID: Union[str, None] = Header(default=None), noteTitle: str = ""):
+async def getData(noteTitle: getDataInfo,userID: Union[str, None] = Header(default=None)):
     if userID and noteTitle:
         sql = "SELECT content FROM note WHERE userID='%s' AND title='%s'" % (
             userID, noteTitle)
