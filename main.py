@@ -28,10 +28,9 @@ app = FastAPI()
 
 
 @app.post("/api/note/createNote")
-async def CreateNote(info: Info):
+async def CreateNote(info: Info,userID: Union[str, None] = Header(default=None)):
     noteTitle = info.noteTitle
     noteContent = info.noteContent
-    userID = 123
     print(userID, noteTitle, noteContent)
     if userID and noteTitle:
         noteTitle = str(noteTitle)
