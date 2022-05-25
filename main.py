@@ -30,7 +30,6 @@ app = FastAPI()
 async def createNote(info: createNoteInfo,userID: Union[str, None] = Header(default=None)):
     noteTitle = info.noteTitle
     noteContent = info.noteContent
-    print(userID, noteTitle, noteContent)
     if userID and noteTitle:
         noteTitle = str(noteTitle)
         noteContent = str(noteContent)
@@ -79,7 +78,7 @@ async def updateNoteDate(info:updateNoteDateInfo,userID: Union[str, None] = Head
     newTitle=info.newTitle
     noteContent=info.noteContent
     if userID and oldTitle and newTitle:
-        sql = "UPDATE note SET title='%s',content='%s' WHERE id='%s' AND title='%s'" % (
+        sql = "UPDATE note SET title='%s',content='%s' WHERE userID='%d' AND title='%s'" % (
             newTitle, noteContent, userID, oldTitle)
         try:
             # 执行语句
@@ -122,6 +121,8 @@ async def getNoteList(userID: Union[str, None] = Header(default=None)):
 # 获取笔记数据
 @app.get("/api/note/getNote")
 async def getData(noteTitle: getDataInfo,userID: Union[str, None] = Header(default=None)):
+    noteTitle=getDataInfo.noteTitle
+    noteTitle=str(noteTitle)
     if userID and noteTitle:
         sql = "SELECT content FROM note WHERE userID='%s' AND title='%s'" % (
             userID, noteTitle)
