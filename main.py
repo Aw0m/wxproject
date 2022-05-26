@@ -87,7 +87,6 @@ async def updateNoteDate(info:updateNoteDateInfo,userID: Union[int, None] = Head
     oldTitle=info.oldTitle
     newTitle=info.newTitle
     noteContent=info.noteContent
-    print(oldTitle,newTitle)
     if userID and oldTitle and newTitle:
         sql = "UPDATE note SET title='%s',content='%s' WHERE userID='%d' AND title='%s'" % (
             newTitle, noteContent, userID, oldTitle)
@@ -98,7 +97,8 @@ async def updateNoteDate(info:updateNoteDateInfo,userID: Union[int, None] = Head
             db.commit()
             # 获取数据
 
-        except:
+        except Exception as e:
+            print(e)
             # 发生错误就回滚
             db.rollback()
             return {"error": "数据库提交失败"}
@@ -145,7 +145,9 @@ async def getData(noteTitle: getDataInfo,userID: Union[int, None] = Header(defau
             # 获取数据
             data = cursor.fetchall()
 
-        except:
+
+        except Exception as e:
+            print(e)
             # 发生错误就回滚
             db.rollback()
             return {"error": "数据库提交失败"}
