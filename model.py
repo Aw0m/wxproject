@@ -12,6 +12,3 @@ class updateNoteDateInfo(BaseModel):
     oldTitle:str
     newTitle:str
     noteContent:str
-
-class getDataInfo(BaseModel):
-    noteTitle:str

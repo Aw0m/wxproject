@@ -98,7 +98,6 @@ async def updateNoteDate(info:updateNoteDateInfo,userID: Union[int, None] = Head
             # 获取数据
 
         except Exception as e:
-            print(e)
             # 发生错误就回滚
             db.rollback()
             return {"error": "数据库提交失败"}
@@ -111,7 +110,7 @@ async def updateNoteDate(info:updateNoteDateInfo,userID: Union[int, None] = Head
 @app.get("/api/note/getNoteList")
 async def getNoteList(userID: Union[int, None] = Header(default=None)):
     if userID:
-        sql = "SELECT title FROM note WHERE userID='%d'" % (userID)
+        sql = "SELECT title FROM note WHERE userID='%d'" % userID
         try:
             # 执行语句
             cursor.execute(sql)
@@ -131,9 +130,7 @@ async def getNoteList(userID: Union[int, None] = Header(default=None)):
 
 # 获取笔记数据
 @app.get("/api/note/getNote")
-async def getData(noteTitle: getDataInfo,userID: Union[int, None] = Header(default=None)):
-    noteTitle=getDataInfo.noteTitle
-    print(noteTitle)
+async def getData(noteTitle: str,userID: Union[int, None] = Header(default=None)):
     if userID and noteTitle:
         sql = "SELECT content FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
@@ -147,7 +144,6 @@ async def getData(noteTitle: getDataInfo,userID: Union[int, None] = Header(defau
 
 
         except Exception as e:
-            print(e)
             # 发生错误就回滚
             db.rollback()
             return {"error": "数据库提交失败"}
