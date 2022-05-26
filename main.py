@@ -27,7 +27,7 @@ app = FastAPI()
 # 创建笔记
 
 @app.post("/api/note/createNote")
-async def createNote(info: createNoteInfo,userID: Union[str, None] = Header(default=None)):
+async def createNote(info: createNoteInfo,userID: Union[int, None] = Header(default=None)):
     noteTitle = info.noteTitle
     noteContent = info.noteContent
     if userID and noteTitle:
@@ -51,12 +51,13 @@ async def createNote(info: createNoteInfo,userID: Union[str, None] = Header(defa
 
 # 删除笔记
 @app.post("/api/note/deleteNote")
-async def deleteNote(info: deleteNoteInfo, userID: Union[str, None] = Header(default=None)):
+async def deleteNote(info: deleteNoteInfo, userID: Union[int, None] = Header(default=None)):
     noteTitle = info.noteTitle
+
     if userID and noteTitle:
         sql = "DELETE FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
-        # obtainOder="SELECT id FROM note WHERE userID='%d'AND title='%s'" % (
+        # obtainOder="SELECT id FROM note WHERE userID='%s'AND title='%s'" % (
         #     userID, noteTitle)
 
         try:
@@ -82,10 +83,11 @@ async def deleteNote(info: deleteNoteInfo, userID: Union[str, None] = Header(def
 
 # 更新笔记
 @app.post("/api/note/updateNoteDate")
-async def updateNoteDate(info:updateNoteDateInfo,userID: Union[str, None] = Header(default=None)):
+async def updateNoteDate(info:updateNoteDateInfo,userID: Union[int, None] = Header(default=None)):
     oldTitle=info.oldTitle
     newTitle=info.newTitle
     noteContent=info.noteContent
+    print(oldTitle,newTitle)
     if userID and oldTitle and newTitle:
         sql = "UPDATE note SET title='%s',content='%s' WHERE userID='%d' AND title='%s'" % (
             newTitle, noteContent, userID, oldTitle)
@@ -107,7 +109,7 @@ async def updateNoteDate(info:updateNoteDateInfo,userID: Union[str, None] = Head
 
 # 获取笔记列表
 @app.get("/api/note/getNoteList")
-async def getNoteList(userID: Union[str, None] = Header(default=None)):
+async def getNoteList(userID: Union[int, None] = Header(default=None)):
     if userID:
         sql = "SELECT title FROM note WHERE userID='%d'" % (userID)
         try:
@@ -129,10 +131,9 @@ async def getNoteList(userID: Union[str, None] = Header(default=None)):
 
 # 获取笔记数据
 @app.get("/api/note/getNote")
-async def getData(noteTitle: getDataInfo,userID: Union[str, None] = Header(default=None)):
+async def getData(noteTitle: getDataInfo,userID: Union[int, None] = Header(default=None)):
     noteTitle=getDataInfo.noteTitle
     print(noteTitle)
-    noteTitle=str(noteTitle)
     if userID and noteTitle:
         sql = "SELECT content FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
