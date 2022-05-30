@@ -10,9 +10,9 @@ import pymysql
 
 # 连接数据库
 try:
-    db = pymysql.connect(host="localhost",
+    db = pymysql.connect(host="sh-cynosdbmysql-grp-h7swdbz0.sql.tencentcdb.com:22081",
                          user="root",
-                         password="@Mysql5",
+                         password="TDsql123",
                          database="MySQL_lan",
                          port=3306)
 except:
