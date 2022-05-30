@@ -131,9 +131,8 @@ async def getNoteList(userID: Union[int, None] = Header(default=None)):
 
 # 获取笔记数据
 @app.get("/api/note/getNote")
-async def getData(noteTitle: getDataInfo,userID: Union[int, None] = Header(default=None)):
-    noteTitle=getDataInfo.noteTitle
-    print(noteTitle)
+async def getData(noteTitle,userID: Union[int, None] = Header(default=None)):
+
     if userID and noteTitle:
         sql = "SELECT content FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
