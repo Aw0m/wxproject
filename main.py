@@ -1,7 +1,7 @@
 # coding:utf-8
 # author:liushuwen
 # creation:2022-5-23
-
+import json
 from typing import *
 from fastapi import *
 from model import *
@@ -10,11 +10,14 @@ import pymysql
 
 # 连接数据库
 try:
-    db = pymysql.connect(host="sh-cynosdbmysql-grp-h7swdbz0.sql.tencentcdb.com",
-                         user="root",
-                         password="TDsql123",
-                         database="wxproject_dev",
-                         port=22081)
+    with open('database.json', 'r', encoding='utf8') as fp:
+        config = json.load(fp)
+        fp.close()
+    db = pymysql.connect(host=config["host"],
+                         user=config["user"],
+                         password=config["password"],
+                         database=config["database"],
+                         port=config["port"])
 except:
     print("数据库连接失败")
     exit(-1)
@@ -27,7 +30,7 @@ app = FastAPI()
 # 创建笔记
 
 @app.post("/api/note/createNote")
-async def createNote(info: createNoteInfo,userID: Union[int, None] = Header(default=None)):
+async def createNote(info: createNoteInfo, userID: Union[int, None] = Header(default=None)):
     noteTitle = info.noteTitle
     noteContent = info.noteContent
     if userID and noteTitle:
@@ -62,7 +65,7 @@ async def deleteNote(info: deleteNoteInfo, userID: Union[int, None] = Header(def
 
         try:
             cursor.execute(sql)
-            #keep id's order
+            # keep id's order
             # cursor.execute(obtainOder)
             # db.commit()
             # order = cursor.fetchall()
@@ -83,10 +86,10 @@ async def deleteNote(info: deleteNoteInfo, userID: Union[int, None] = Header(def
 
 # 更新笔记
 @app.post("/api/note/updateNoteDate")
-async def updateNoteDate(info:updateNoteDateInfo,userID: Union[int, None] = Header(default=None)):
-    oldTitle=info.oldTitle
-    newTitle=info.newTitle
-    noteContent=info.noteContent
+async def updateNoteDate(info: updateNoteDateInfo, userID: Union[int, None] = Header(default=None)):
+    oldTitle = info.oldTitle
+    newTitle = info.newTitle
+    noteContent = info.noteContent
     if userID and oldTitle and newTitle:
         sql = "UPDATE note SET title='%s',content='%s' WHERE userID='%d' AND title='%s'" % (
             newTitle, noteContent, userID, oldTitle)
@@ -131,8 +134,7 @@ async def getNoteList(userID: Union[int, None] = Header(default=None)):
 
 # 获取笔记数据
 @app.get("/api/note/getNote")
-async def getData(noteTitle,userID: Union[int, None] = Header(default=None)):
-
+async def getData(noteTitle, userID: Union[int, None] = Header(default=None)):
     if userID and noteTitle:
         sql = "SELECT content FROM note WHERE userID='%d' AND title='%s'" % (
             userID, noteTitle)
@@ -156,5 +158,4 @@ async def getData(noteTitle,userID: Union[int, None] = Header(default=None)):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app='main:app', host="127.0.0.1",
-                port=8000, reload=True, debug=True)
+    uvicorn.run(app='main:app', port=8003, reload=True, debug=True)
