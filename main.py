@@ -7,6 +7,7 @@ from fastapi import *
 from model import *
 import uvicorn
 import pymysql
+from service_registry import RegistryThread
 
 # 连接数据库
 try:
@@ -19,7 +20,7 @@ try:
                          database=config["database"],
                          port=config["port"])
 except:
-    print("数据库连接失败")
+    print("MySQL数据库连接失败")
     exit(-1)
 
 # 初始化
@@ -158,4 +159,6 @@ async def getData(noteTitle, userID: Union[int, None] = Header(default=None)):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app='main:app', port=8003, reload=True, debug=True)
+    uvicorn.run(app='main:app', port=8002, reload=True, debug=True)
+    r = RegistryThread("note", "116.63.145.25", "8002", 3)
+    r.start()
