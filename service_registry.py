@@ -39,5 +39,5 @@ def registry(service_name: str, ip: str, host: str, time_len):
     thread.start()
 
 
-def get_local_url(ip: str, host: str) -> str:
-    return ip + ':' + host
+def get_local_url(ip: str, port: str) -> str:
+    return ip + ':' + port
