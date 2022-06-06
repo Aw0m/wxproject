@@ -5,14 +5,14 @@ import json
 
 # 连接数据库
 try:
-    with open('database.json', 'r', encoding='utf8') as fp:
+    with open('config.json', 'r', encoding='utf8') as fp:
         config = json.load(fp)
         fp.close()
 
     redis_pool = redis.ConnectionPool(host=config["host"], port=config["port"],
                                       password=config["password"], db=config["db"])
 except:
-    print("数据库连接失败")
+    print("Redis数据库连接失败")
     exit(-1)
 
 
