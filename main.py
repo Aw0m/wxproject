@@ -31,13 +31,13 @@ app = FastAPI()
 # 创建笔记
 
 @app.post("/api/note/createNote")
-async def createNote(info: createNoteInfo, userID: Union[int, None] = Header(default=None)):
+async def createNote(info: createNoteInfo, userID: Union[str, None] = Header(default=None)):
     noteTitle = info.noteTitle
     noteContent = info.noteContent
     if userID and noteTitle:
         noteTitle = str(noteTitle)
         noteContent = str(noteContent)
-        sql = "INSERT INTO note (userID,title,content) VALUES ('%d','%s','%s')" % (
+        sql = "INSERT INTO note (userID,title,content) VALUES ('%s','%s','%s')" % (
             userID, noteTitle, noteContent)
         try:
             # 执行语句
@@ -55,11 +55,11 @@ async def createNote(info: createNoteInfo, userID: Union[int, None] = Header(def
 
 # 删除笔记
 @app.post("/api/note/deleteNote")
-async def deleteNote(info: deleteNoteInfo, userID: Union[int, None] = Header(default=None)):
+async def deleteNote(info: deleteNoteInfo, userID: Union[str, None] = Header(default=None)):
     noteTitle = info.noteTitle
 
     if userID and noteTitle:
-        sql = "DELETE FROM note WHERE userID='%d' AND title='%s'" % (
+        sql = "DELETE FROM note WHERE userID='%s' AND title='%s'" % (
             userID, noteTitle)
         # obtainOder="SELECT id FROM note WHERE userID='%s'AND title='%s'" % (
         #     userID, noteTitle)
@@ -87,12 +87,12 @@ async def deleteNote(info: deleteNoteInfo, userID: Union[int, None] = Header(def
 
 # 更新笔记
 @app.post("/api/note/updateNoteDate")
-async def updateNoteDate(info: updateNoteDateInfo, userID: Union[int, None] = Header(default=None)):
+async def updateNoteDate(info: updateNoteDateInfo, userID: Union[str, None] = Header(default=None)):
     oldTitle = info.oldTitle
     newTitle = info.newTitle
     noteContent = info.noteContent
     if userID and oldTitle and newTitle:
-        sql = "UPDATE note SET title='%s',content='%s' WHERE userID='%d' AND title='%s'" % (
+        sql = "UPDATE note SET title='%s',content='%s' WHERE userID='%s' AND title='%s'" % (
             newTitle, noteContent, userID, oldTitle)
         try:
             # 执行语句
@@ -113,9 +113,9 @@ async def updateNoteDate(info: updateNoteDateInfo, userID: Union[int, None] = He
 
 # 获取笔记列表
 @app.get("/api/note/getNoteList")
-async def getNoteList(userID: Union[int, None] = Header(default=None)):
+async def getNoteList(userID: Union[str, None] = Header(default=None)):
     if userID:
-        sql = "SELECT title FROM note WHERE userID='%d'" % (userID)
+        sql = "SELECT title FROM note WHERE userID='%s'" % (userID)
         try:
             # 执行语句
             cursor.execute(sql)
@@ -135,9 +135,9 @@ async def getNoteList(userID: Union[int, None] = Header(default=None)):
 
 # 获取笔记数据
 @app.get("/api/note/getNote")
-async def getData(noteTitle, userID: Union[int, None] = Header(default=None)):
+async def getData(noteTitle, userID: Union[str, None] = Header(default=None)):
     if userID and noteTitle:
-        sql = "SELECT content FROM note WHERE userID='%d' AND title='%s'" % (
+        sql = "SELECT content FROM note WHERE userID='%s' AND title='%s'" % (
             userID, noteTitle)
         try:
             # 执行语句
@@ -159,6 +159,6 @@ async def getData(noteTitle, userID: Union[int, None] = Header(default=None)):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app='main:app', port=8002, reload=True, debug=True)
     r = RegistryThread("note", "116.63.145.25", "8002", 3)
     r.start()
+    uvicorn.run(app='main:app', host="0.0.0.0", port=8002, reload=True, debug=True)
